@@ -1,7 +1,20 @@
 plugins {
     id("com.android.library")
     id("kotlin-android")
-    kotlin("kapt")
+    id("maven-publish")
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            create<MavenPublication>("maven") {
+                groupId = "com.github.Velord"
+                artifactId = "Vlad Yaroshenko"
+                version = "0.1.0"
+                from(components["release"])
+            }
+        }
+    }
 }
 
 android {
