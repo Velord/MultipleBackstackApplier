@@ -1,6 +1,6 @@
 rootProject.name = "ComposeMultipleBackstackDemo"
 include(":app")
-include(":composemultiplebackstack")
+include(":multiplebackstackapplier")
 
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)

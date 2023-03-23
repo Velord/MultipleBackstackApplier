@@ -109,8 +109,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":multiplebackstackapplier"))
     // Module
-    implementation(project(":composemultiplebackstack"))
     // Templates
     implementation(libs.bundles.kotlin.module.app)
     implementation(libs.bundles.androidx.module.app)

@@ -9,7 +9,7 @@ afterEvaluate {
         publications {
             create<MavenPublication>("maven") {
                 groupId = "com.github.Velord"
-                artifactId = "Vlad Yaroshenko"
+                artifactId = "MultipleBackstackApplier"
                 version = "0.1.0"
                 from(components["release"])
             }
