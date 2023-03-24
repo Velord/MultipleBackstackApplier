@@ -46,7 +46,9 @@ android {
 }
 
 dependencies {
-
+    // Templates
+    implementation(libs.bundles.androidx.core)
+    implementation(libs.bundles.androidx.navigation)
 }
 
 // https://slack-chats.kotlinlang.org/t/9025044/after-updating-my-project-to-kotlin-1-8-0-i-m-getting-the-fo

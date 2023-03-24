@@ -10,8 +10,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.velord.composemultiplebackstack.A
 import com.velord.composemultiplebackstackdemo.ui.theme.ComposeMultipleBackstackDemoTheme
+import com.velord.multiplebackstackapplier.MultipleBackstackApplier
+import com.velord.multiplebackstackapplier.MultipleBackstackGraphItem
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
