@@ -8,16 +8,13 @@ import android.view.MenuItem
 import android.view.View
 import androidx.annotation.IdRes
 import androidx.core.view.forEach
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.findViewTreeLifecycleOwner
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.*
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.ui.NavigationUI
 import com.google.android.material.navigation.NavigationBarMenu
+import com.velord.multiplebackstackapplier.MultipleBackstackApplier.matchDestination
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
@@ -43,54 +40,64 @@ object MultipleBackstackApplier {
         }
     }
 
-    @SuppressLint("RestrictedApi")
-    fun setupWithNavController(
+    fun createListener(
+        context: Context,
         items: List<MultipleBackstackGraphItem>,
-        navigationView: View,
-        navController: NavController,
-        flowOnSelect: Flow<MultipleBackstackGraphItem>,
-        onMenuChange: (MenuItem) -> Unit,
-    ) {
-        val menu = createNavigationBarMenu(navigationView.context, items)
-
-        navigationView.findViewTreeLifecycleOwner()?.let {
-            it.lifecycleScope.launch {
-                it.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    flowOnSelect.collectLatest { navItem ->
-                        val menuItem = menu.findItem(navItem.navigationGraphId)
-                        NavigationUI.onNavDestinationSelected(
-                            item = menuItem,
-                            navController = navController
-                        )
-                    }
-                }
+        onChangeDestination: (MenuItem) -> Unit
+    ): NavController.OnDestinationChangedListener = NavController.OnDestinationChangedListener {
+            _, destination, _ ->
+        createNavigationBarMenu(context, items).forEach { item ->
+            if (destination.matchDestination(item.itemId)) {
+                item.isChecked = true
+                onChangeDestination(item)
             }
         }
-        val weakReference = WeakReference(navigationView)
-        navController.addOnDestinationChangedListener(
-            object : NavController.OnDestinationChangedListener {
-                override fun onDestinationChanged(
-                    controller: NavController,
-                    destination: NavDestination,
-                    arguments: Bundle?
-                ) {
-                    val view = weakReference.get()
-                    if (view == null) {
-                        navController.removeOnDestinationChangedListener(this)
-                        return
-                    }
-                    menu.forEach { item ->
-                        if (destination.matchDestination(item.itemId)) {
-                            item.isChecked = true
-                            onMenuChange(item)
-                        }
-                    }
-                }
-            }
-        )
     }
 
     // Copy from androidx.navigation.ui.NavigationUI. Cause it's internal.
-    fun NavDestination.matchDestination(@IdRes destId: Int): Boolean =
+    internal fun NavDestination.matchDestination(@IdRes destId: Int): Boolean =
         hierarchy.any { it.id == destId }
+}
+
+class MultipleBackstack(
+    private val navController: Lazy<NavController>,
+    private val lifecycleOwner: LifecycleOwner,
+    private val context: Context,
+    private val items: List<MultipleBackstackGraphItem>,
+    private val flowOnSelect: Flow<MultipleBackstackGraphItem>,
+    onMenuChange: (MenuItem) -> Unit,
+) : DefaultLifecycleObserver {
+
+    private var listener: NavController.OnDestinationChangedListener =
+        MultipleBackstackApplier.createListener(context, items, onMenuChange)
+
+    init {
+        observe()
+    }
+
+    override fun onPause(owner: LifecycleOwner) {
+        super.onPause(owner)
+        navController.value.removeOnDestinationChangedListener(listener)
+    }
+
+    override fun onResume(owner: LifecycleOwner) {
+        navController.value.addOnDestinationChangedListener(listener)
+        super.onResume(owner)
+    }
+
+    private fun observe() {
+        lifecycleOwner.lifecycleScope.launch {
+            lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                flowOnSelect.collectLatest { navItem ->
+                    Log.d("@@@", "onSelect: ${navItem.navigationGraphId}")
+                    val menu = MultipleBackstackApplier.createNavigationBarMenu(context, items)
+                    val menuItem = menu.findItem(navItem.navigationGraphId)
+                    NavigationUI.onNavDestinationSelected(
+                        item = menuItem,
+                        navController = navController.value
+                    )
+                }
+            }
+        }
+    }
 }

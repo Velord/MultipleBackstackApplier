@@ -1,18 +1,53 @@
 package com.velord.multiplebackstackapplier.utils.compose
 
 import android.util.Log
-import androidx.activity.compose.BackHandler
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.material3.SnackbarData
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 private const val DELAY_TO_EXIT_APP = 3000L
 private const val DEFAULT_TIME = 0L
+
+@Composable
+fun BackHandler(enabled: Boolean = true, onBack: () -> Unit) {
+    // Safely update the current `onBack` lambda when a new one is provided
+    val currentOnBack by rememberUpdatedState(onBack)
+    // Remember in Composition a back callback that calls the `onBack` lambda
+    val backCallback = remember {
+        object : OnBackPressedCallback(enabled) {
+            override fun handleOnBackPressed() {
+                currentOnBack()
+            }
+        }
+    }
+    // On every successful composition, update the callback with the `enabled` value
+    SideEffect {
+        backCallback.isEnabled = enabled
+    }
+    val backDispatcher = checkNotNull(LocalOnBackPressedDispatcherOwner.current) {
+        "No OnBackPressedDispatcherOwner was provided via LocalOnBackPressedDispatcherOwner"
+    }.onBackPressedDispatcher
+    val lifecycleOwner = LocalLifecycleOwner.current
+    // "enabled" is a key which guruarantees
+    // addCallback will be triggered when user leaves composition and return back a.k.a resubscribing
+    DisposableEffect(lifecycleOwner, backDispatcher, enabled) {
+        // Add callback to the backDispatcher
+        Log.d("@@@", "addCallback")
+        backDispatcher.addCallback(lifecycleOwner, backCallback)
+        // When the effect leaves the Composition, remove the callback
+        onDispose {
+            backCallback.remove()
+        }
+    }
+}
 
 @Composable
 fun OnBackPressHandler(
@@ -33,7 +68,6 @@ fun OnBackPressHandler(
         mutableStateOf(DEFAULT_TIME)
     }
 
-    //Log.d("@@@", "OnBackPressHandler: $enabled")
     BackHandler(enabled) {
         triggerState.value = System.currentTimeMillis()
     }
