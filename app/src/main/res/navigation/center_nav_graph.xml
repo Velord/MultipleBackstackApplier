@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/center_nav_graph"
+    app:startDestination="@id/centerGraphFragment">
+
+    <fragment
+        android:id="@+id/centerGraphFragment"
+        android:name="com.velord.composemultiplebackstackdemo.ui.main.bottomNavigation.center.CenterGraphFragment"
+        android:label="CenterGraphFragment" >
+
+        <action
+            android:id="@+id/toInDevelopmentFragment"
+            app:destination="@id/inDevelopmentFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/inDevelopmentFragment"
+        android:name="com.velord.composemultiplebackstackdemo.ui.main.inDevelopment.InDevelopmentFragment"
+        android:label="InDevelopmentFragment" />
+
+</navigation>

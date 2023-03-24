@@ -119,8 +119,6 @@ dependencies {
     implementation(libs.bundles.compose.foundation)
     implementation(libs.bundles.compose.material)
     implementation(libs.bundles.compose.accompanist)
-    implementation(libs.compose.paging)
-    implementation(libs.bundles.compose.thirdparty)
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class).all {

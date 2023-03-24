@@ -10,7 +10,7 @@ afterEvaluate {
             create<MavenPublication>("maven") {
                 groupId = "com.github.Velord"
                 artifactId = "MultipleBackstackApplier"
-                version = "0.1.0"
+                version = "0.3.0"
                 from(components["release"])
             }
         }
@@ -19,7 +19,6 @@ afterEvaluate {
 
 android {
     namespace = "com.velord.composemultiplebackstack"
-    compileSdk = 33
 
     compileSdk = libs.versions.targetApi.get().toInt()
 
@@ -43,12 +42,22 @@ android {
     kotlinOptions {
         jvmTarget = libs.versions.jvmTarget.get()
     }
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
+    }
+    buildFeatures {
+        compose = true
+        viewBinding = true
+    }
 }
 
 dependencies {
     // Templates
     implementation(libs.bundles.androidx.core)
     implementation(libs.bundles.androidx.navigation)
+    // Compose
+    implementation(libs.bundles.compose.core)
+    implementation(libs.bundles.compose.material)
 }
 
 // https://slack-chats.kotlinlang.org/t/9025044/after-updating-my-project-to-kotlin-1-8-0-i-m-getting-the-fo
@@ -56,4 +65,8 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
     kotlinOptions {
         jvmTarget = libs.versions.jvmTarget.get()
     }
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class).all {
+    kotlinOptions.freeCompilerArgs = listOf("-Xcontext-receivers")
 }

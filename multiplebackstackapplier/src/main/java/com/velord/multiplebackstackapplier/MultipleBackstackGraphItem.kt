@@ -14,6 +14,6 @@ interface MultipleBackstackGraphItem {
     // Id of navigation graph for multiple backstack.
     // Graph must be included in "main|desirable|bottom" navigation graph.
     val navigationGraphId: Int
-    // Use could use this id to check when you are on the start destination.
+    // You could use this id to check when you are on the start destination.
     val startDestinationId: Int
 }

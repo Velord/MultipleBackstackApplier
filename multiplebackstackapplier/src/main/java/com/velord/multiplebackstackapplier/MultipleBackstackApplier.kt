@@ -3,11 +3,13 @@ package com.velord.multiplebackstackapplier
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.annotation.IdRes
 import androidx.core.view.forEach
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -16,6 +18,7 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.ui.NavigationUI
 import com.google.android.material.navigation.NavigationBarMenu
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -29,7 +32,7 @@ object MultipleBackstackApplier {
     // Create "fake" NavigationBarMenu. Then summon MenuItems to it.
     // Ids of MenuItems must be the same as navigation graph ids.
     @SuppressLint("RestrictedApi")
-    private fun createNavigationBarMenu(
+    fun createNavigationBarMenu(
         context: Context,
         items: List<MultipleBackstackGraphItem>
     ): NavigationBarMenu = NavigationBarMenu(
@@ -46,7 +49,7 @@ object MultipleBackstackApplier {
         navigationView: View,
         navController: NavController,
         flowOnSelect: Flow<MultipleBackstackGraphItem>,
-        onMenuChange: (MenuItem) -> Unit
+        onMenuChange: (MenuItem) -> Unit,
     ) {
         val menu = createNavigationBarMenu(navigationView.context, items)
 
@@ -88,6 +91,6 @@ object MultipleBackstackApplier {
     }
 
     // Copy from androidx.navigation.ui.NavigationUI. Cause it's internal.
-    internal fun NavDestination.matchDestination(@IdRes destId: Int): Boolean =
+    fun NavDestination.matchDestination(@IdRes destId: Int): Boolean =
         hierarchy.any { it.id == destId }
 }

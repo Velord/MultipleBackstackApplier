@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">ComposeMultipleBackstackDemo</string>
+    <string name="press_again_to_exit">Press again to exit</string>
+    <string name="add_new_screen_left">Add new Screen at the Left to Stack</string>
+    <string name="add_new_screen_center">Add new Screen at the Center to Stack</string>
+    <string name="add_new_screen_right">Add new Screen at the Right to Stack</string>
+    <string name="open_new">Open new Screen In Full Window</string>
 </resources>

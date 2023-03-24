@@ -1,4 +1,4 @@
-package com.velord.composemultiplebackstackdemo.ui.theme
+package com.velord.composemultiplebackstackdemo.ui.compose.theme
 
 import androidx.compose.ui.graphics.Color
 
