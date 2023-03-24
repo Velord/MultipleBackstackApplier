@@ -2,10 +2,7 @@ package com.velord.multiplebackstackapplier
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
-import android.view.View
 import androidx.annotation.IdRes
 import androidx.core.view.forEach
 import androidx.lifecycle.*
@@ -14,12 +11,9 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.ui.NavigationUI
 import com.google.android.material.navigation.NavigationBarMenu
-import com.velord.multiplebackstackapplier.MultipleBackstackApplier.matchDestination
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.lang.ref.WeakReference
 
 object MultipleBackstackApplier {
 
@@ -89,7 +83,6 @@ class MultipleBackstack(
         lifecycleOwner.lifecycleScope.launch {
             lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 flowOnSelect.collectLatest { navItem ->
-                    Log.d("@@@", "onSelect: ${navItem.navigationGraphId}")
                     val menu = MultipleBackstackApplier.createNavigationBarMenu(context, items)
                     val menuItem = menu.findItem(navItem.navigationGraphId)
                     NavigationUI.onNavDestinationSelected(

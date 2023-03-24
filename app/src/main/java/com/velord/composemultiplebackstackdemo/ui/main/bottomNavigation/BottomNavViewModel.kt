@@ -1,6 +1,5 @@
 package com.velord.composemultiplebackstackdemo.ui.main.bottomNavigation
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavDestination
@@ -29,7 +28,6 @@ class BottomNavViewModel : ViewModel() {
 
     fun updateBackHandling(currentNavigationDestination: NavDestination?) {
         val isStart = currentNavigationDestination.isCurrentStartDestination(getNavigationItems())
-        Log.d("@@@", "isStart: $isStart; current: ${currentNavigationDestination?.label}")
         isBackHandlingEnabledFlow.value = isStart
     }
 }

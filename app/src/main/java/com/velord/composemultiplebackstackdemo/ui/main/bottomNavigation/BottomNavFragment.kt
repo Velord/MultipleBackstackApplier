@@ -1,31 +1,23 @@
 package com.velord.composemultiplebackstackdemo.ui.main.bottomNavigation
 
-import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.compose.BackHandler
-import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.NavigationUI
 import com.velord.composemultiplebackstackdemo.R
 import com.velord.composemultiplebackstackdemo.databinding.FragmentBottomNavBinding
 import com.velord.composemultiplebackstackdemo.ui.compose.theme.setContentWithTheme
@@ -167,6 +159,7 @@ private fun Content(
     }
 }
 
+@Preview
 @Composable
 private fun BottomNavContentPreview() {
     Content(
