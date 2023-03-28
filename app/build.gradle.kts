@@ -112,13 +112,9 @@ dependencies {
     // Module
     implementation(project(":multiplebackstackapplier"))
     // Templates
-    implementation(libs.bundles.kotlin.module.app)
-    implementation(libs.bundles.androidx.module.app)
-    // Compose
-    implementation(libs.bundles.compose.core)
-    implementation(libs.bundles.compose.foundation)
-    implementation(libs.bundles.compose.material)
-    implementation(libs.bundles.compose.accompanist)
+    implementation(libs.bundles.kotlin.all)
+    implementation(libs.bundles.androidx.all)
+    implementation(libs.bundles.compose.all)
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class).all {
