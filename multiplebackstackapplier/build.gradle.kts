@@ -53,11 +53,11 @@ android {
 
 dependencies {
     // Templates
-    implementation(libs.bundles.androidx.core)
+    implementation(libs.bundles.androidx.activity)
     implementation(libs.bundles.androidx.navigation)
     // Compose
     implementation(libs.bundles.compose.core)
-    implementation(libs.bundles.compose.material)
+    implementation(libs.bundles.compose.material.all)
 }
 
 // https://slack-chats.kotlinlang.org/t/9025044/after-updating-my-project-to-kotlin-1-8-0-i-m-getting-the-fo
