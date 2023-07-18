@@ -2,6 +2,7 @@ package com.velord.multiplebackstackapplier
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import android.view.MenuItem
 import androidx.annotation.IdRes
 import androidx.core.view.forEach
@@ -35,12 +36,12 @@ object MultipleBackstackApplier {
     }
 
     fun createListener(
-        context: Context,
-        items: List<MultipleBackstackGraphItem>,
+        menu: NavigationBarMenu,
         onChangeDestination: (MenuItem) -> Unit
     ): NavController.OnDestinationChangedListener = NavController.OnDestinationChangedListener {
             _, destination, _ ->
-        createNavigationBarMenu(context, items).forEach { item ->
+        Log.d("multiplebackstackapplier", "OnDestinationChangedListener: ${destination}")
+        menu.forEach { item ->
             if (destination.matchDestination(item.itemId)) {
                 item.isChecked = true
                 onChangeDestination(item)
@@ -56,25 +57,29 @@ object MultipleBackstackApplier {
 class MultipleBackstack(
     private val navController: Lazy<NavController>,
     private val lifecycleOwner: LifecycleOwner,
-    private val context: Context,
-    private val items: List<MultipleBackstackGraphItem>,
     private val flowOnSelect: Flow<MultipleBackstackGraphItem>,
+    context: Context,
+    items: List<MultipleBackstackGraphItem>,
     onMenuChange: (MenuItem) -> Unit,
 ) : DefaultLifecycleObserver {
 
+    private val menu =
+        MultipleBackstackApplier.createNavigationBarMenu(context, items)
     private var listener: NavController.OnDestinationChangedListener =
-        MultipleBackstackApplier.createListener(context, items, onMenuChange)
+        MultipleBackstackApplier.createListener(menu, onMenuChange)
 
     init {
         observe()
     }
 
     override fun onPause(owner: LifecycleOwner) {
+        Log.d("multiplebackstackapplier", "onPause")
         super.onPause(owner)
         navController.value.removeOnDestinationChangedListener(listener)
     }
 
     override fun onResume(owner: LifecycleOwner) {
+        Log.d("multiplebackstackapplier", "onResume")
         navController.value.addOnDestinationChangedListener(listener)
         super.onResume(owner)
     }
@@ -82,13 +87,15 @@ class MultipleBackstack(
     private fun observe() {
         lifecycleOwner.lifecycleScope.launch {
             lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                flowOnSelect.collectLatest { navItem ->
-                    val menu = MultipleBackstackApplier.createNavigationBarMenu(context, items)
-                    val menuItem = menu.findItem(navItem.navigationGraphId)
-                    NavigationUI.onNavDestinationSelected(
-                        item = menuItem,
-                        navController = navController.value
-                    )
+                Log.d("multiplebackstackapplier", "Lifecycle.State.STARTED")
+                launch {
+                    flowOnSelect.collectLatest { navItem ->
+                        val menuItem = menu.findItem(navItem.navigationGraphId)
+                        NavigationUI.onNavDestinationSelected(
+                            item = menuItem,
+                            navController = navController.value
+                        )
+                    }
                 }
             }
         }

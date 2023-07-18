@@ -1,7 +1,9 @@
 package com.velord.composemultiplebackstackdemo.ui.navigation
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.*
+import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.ArrowForward
 import com.velord.composemultiplebackstackdemo.R
 import com.velord.multiplebackstackapplier.MultipleBackstackGraphItem
 
@@ -15,8 +17,8 @@ enum class BottomNavigationItem(
 
 
     val icon get() = when (this) {
-        Left -> Icons.Outlined.ArrowLeft
-        Center -> Icons.Outlined.CenterFocusStrong
-        Right -> Icons.Outlined.ArrowRight
+        Left -> Icons.Outlined.ArrowBack
+        Center -> Icons.Outlined.Add
+        Right -> Icons.Outlined.ArrowForward
     }
 }

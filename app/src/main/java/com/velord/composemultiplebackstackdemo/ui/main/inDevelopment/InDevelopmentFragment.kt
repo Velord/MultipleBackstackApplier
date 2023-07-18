@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -18,7 +18,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import com.velord.composemultiplebackstackdemo.R
 import com.velord.composemultiplebackstackdemo.ui.compose.theme.setContentWithTheme
 import com.velord.composemultiplebackstackdemo.ui.utils.activityNavController
@@ -44,15 +43,8 @@ class InDevelopmentFragment : Fragment() {
 
     private fun initObserving() {
         viewLifecycleScope.launch {
-            launch {
-                viewModel.navigationEvent.collect {
-                    activityNavController()?.navigate(it.id)
-                }
-            }
-            launch {
-                viewModel.backEvent.collect {
-                    findNavController().popBackStack()
-                }
+            viewModel.navigationEvent.collect {
+                activityNavController()?.navigate(it.id)
             }
         }
     }

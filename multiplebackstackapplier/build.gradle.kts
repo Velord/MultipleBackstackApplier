@@ -1,6 +1,6 @@
 plugins {
-    id("com.android.library")
-    id("kotlin-android")
+    id(libs.plugins.android.library.get().pluginId)
+    id(libs.plugins.kotlin.android.get().pluginId)
     id("maven-publish")
 }
 
@@ -10,7 +10,7 @@ afterEvaluate {
             create<MavenPublication>("maven") {
                 groupId = "com.github.Velord"
                 artifactId = "MultipleBackstackApplier"
-                version = "0.3.0"
+                version = "0.4.0"
                 from(components["release"])
             }
         }
@@ -24,7 +24,6 @@ android {
 
     defaultConfig {
         minSdk = libs.versions.minApi.get().toInt()
-        targetSdk = libs.versions.targetApi.get().toInt()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -56,8 +55,7 @@ dependencies {
     implementation(libs.bundles.androidx.activity)
     implementation(libs.bundles.androidx.navigation)
     // Compose
-    implementation(libs.bundles.compose.core)
-    implementation(libs.bundles.compose.material.all)
+    implementation(libs.bundles.compose.material.third)
 }
 
 // https://slack-chats.kotlinlang.org/t/9025044/after-updating-my-project-to-kotlin-1-8-0-i-m-getting-the-fo

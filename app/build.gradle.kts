@@ -1,16 +1,13 @@
-// Migrate to gradle 8.1 when be released should fix that
-// Suppress according to https://github.com/gradle/gradle/issues/22797
-@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
-    id("kotlin-kapt")
+    id(libs.plugins.android.application.get().pluginId)
+    id(libs.plugins.kotlin.android.get().pluginId)
+    id(libs.plugins.kotlin.kapt.get().pluginId)
 }
 
 // When app incompatible with previous version change this value
 val globalVersion = 0
 // When you create huge feature(or many) release change this value
-val majorVersion = 1
+val majorVersion = 2
 // When you create feature release change this value
 val minorVersion = 0
 // When you create fix change this value
@@ -72,14 +69,12 @@ android {
             applicationIdSuffix = ".develop"
             buildConfigField("String", "CURRENT_VERSION", "\"${currentVersion}\"")
         }
-
         create("stage") {
             dimension = "environment"
             manifestPlaceholders["enableCrashReporting"] = true
             applicationIdSuffix = ".stage"
             buildConfigField("String", "CURRENT_VERSION", "\"${currentVersion}\"")
         }
-
         create("production") {
             dimension = "environment"
             manifestPlaceholders["enableCrashReporting"] = true
@@ -101,11 +96,6 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
     }
-    packagingOptions {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
 }
 
 dependencies {
@@ -113,8 +103,11 @@ dependencies {
     implementation(project(":multiplebackstackapplier"))
     // Templates
     implementation(libs.bundles.kotlin.all)
-    implementation(libs.bundles.androidx.all)
-    implementation(libs.bundles.compose.all)
+    implementation(libs.bundles.androidx.module)
+    // Compose
+    implementation(libs.bundles.compose.material.third)
+    implementation(libs.bundles.compose.ui)
+    implementation(libs.bundles.compose.accompanist.core)
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class).all {

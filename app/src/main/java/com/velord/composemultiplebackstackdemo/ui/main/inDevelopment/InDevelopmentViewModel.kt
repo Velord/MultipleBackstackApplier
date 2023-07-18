@@ -10,13 +10,8 @@ import kotlinx.coroutines.launch
 class InDevelopmentViewModel : ViewModel() {
 
     val navigationEvent = MutableSharedFlow<NavigationData>()
-    val backEvent = MutableSharedFlow<Unit>()
 
     fun onOpenNew() = viewModelScope.launch {
         navigationEvent.emit(NavigationData(R.id.toInDevelopmentFragment))
-    }
-
-    fun onBackPressed() = viewModelScope.launch {
-        backEvent.emit(Unit)
     }
 }
