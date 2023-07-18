@@ -11,16 +11,6 @@
         android:label="BottomNavFragment">
 
         <action
-            android:id="@+id/toBottomNavFragment"
-            app:destination="@+id/bottomNavFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"
-            app:popUpTo="@id/bottomNavFragment"
-            app:popUpToInclusive="true" />
-
-        <action
             android:id="@+id/toInDevelopmentFragment"
             app:destination="@id/inDevelopmentFragment"
             />
@@ -29,7 +19,6 @@
     <fragment
         android:id="@+id/inDevelopmentFragment"
         android:name="com.velord.composemultiplebackstackdemo.ui.main.inDevelopment.InDevelopmentFragment"
-        android:label="InDevelopmentFragment" >
-    </fragment>
+        android:label="InDevelopmentFragment" />
 
 </navigation>

@@ -1,9 +1,22 @@
 package com.velord.composemultiplebackstackdemo.ui.main.bottomNavigation
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalAbsoluteTonalElevation
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.Text
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,9 +52,9 @@ class BottomNavFragment : Fragment(R.layout.fragment_bottom_nav) {
         MultipleBackstack(
             navController = lazy { navController },
             lifecycleOwner = this,
+            flowOnSelect = viewModel.currentTabFlow,
             context = requireContext(),
             items = viewModel.getNavigationItems(),
-            flowOnSelect = viewModel.currentTabFlow,
             onMenuChange = {
                 val current = navController.currentDestination
                 viewModel.updateBackHandling(current)
@@ -92,6 +105,7 @@ private fun BottomNavScreen(viewModel: BottomNavViewModel) {
     val tabFlow = viewModel.currentTabFlow.collectAsStateWithLifecycle()
     val isBackHandlingEnabledState =
         viewModel.isBackHandlingEnabledFlow.collectAsStateWithLifecycle()
+    Log.d("multiplebackstackapplier", "isBackHandlingEnabledState: ${isBackHandlingEnabledState.value}")
 
     Content(
         selectedItem = tabFlow.value,

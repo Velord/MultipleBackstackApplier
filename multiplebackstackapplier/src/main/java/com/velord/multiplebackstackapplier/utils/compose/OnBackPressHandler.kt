@@ -7,7 +7,14 @@ import androidx.compose.material3.SnackbarData
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import kotlinx.coroutines.delay
@@ -17,15 +24,14 @@ private const val DELAY_TO_EXIT_APP = 3000L
 private const val DEFAULT_TIME = 0L
 
 @Composable
-fun BackHandler(enabled: Boolean = true, onBack: () -> Unit) {
+fun MyBackHandler(enabled: Boolean = true, onBack: () -> Unit) {
+    Log.d("multiplebackstackapplier", "MyBackHandler")
     // Safely update the current `onBack` lambda when a new one is provided
     val currentOnBack by rememberUpdatedState(onBack)
     // Remember in Composition a back callback that calls the `onBack` lambda
-    val backCallback = remember {
-        object : OnBackPressedCallback(enabled) {
-            override fun handleOnBackPressed() {
-                currentOnBack()
-            }
+    val backCallback = object : OnBackPressedCallback(enabled) {
+        override fun handleOnBackPressed() {
+            currentOnBack()
         }
     }
     // On every successful composition, update the callback with the `enabled` value
@@ -36,11 +42,11 @@ fun BackHandler(enabled: Boolean = true, onBack: () -> Unit) {
         "No OnBackPressedDispatcherOwner was provided via LocalOnBackPressedDispatcherOwner"
     }.onBackPressedDispatcher
     val lifecycleOwner = LocalLifecycleOwner.current
-    // "enabled" is a key which guruarantees
+    // "enabled" is a key which guarantees
     // addCallback will be triggered when user leaves composition and return back a.k.a resubscribing
     DisposableEffect(lifecycleOwner, backDispatcher, enabled) {
         // Add callback to the backDispatcher
-        Log.d("@@@", "addCallback")
+        Log.d("multiplebackstackapplier", "addCallback")
         backDispatcher.addCallback(lifecycleOwner, backCallback)
         // When the effect leaves the Composition, remove the callback
         onDispose {
@@ -57,6 +63,7 @@ fun OnBackPressHandler(
     afterEdge: () -> Unit = {},
     onClick: suspend () -> Unit = {},
 ) {
+    Log.d("multiplebackstackapplier", "OnBackPressHandler")
     val currentOnEdgeViolation by rememberUpdatedState(onEdgeViolation)
     val currentAfterEdge by rememberUpdatedState(afterEdge)
     val currentOnClick by rememberUpdatedState(onClick)
@@ -68,7 +75,7 @@ fun OnBackPressHandler(
         mutableStateOf(DEFAULT_TIME)
     }
 
-    BackHandler(enabled) {
+    MyBackHandler(enabled) {
         triggerState.value = System.currentTimeMillis()
     }
 
