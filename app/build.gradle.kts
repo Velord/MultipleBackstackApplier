@@ -102,7 +102,7 @@ dependencies {
     // Module
     implementation(project(":multiplebackstackapplier"))
     // Templates
-    implementation(libs.bundles.kotlin.all)
+    implementation(libs.bundles.kotlin.module)
     implementation(libs.bundles.androidx.module)
     // Compose
     implementation(libs.bundles.compose.material.third)

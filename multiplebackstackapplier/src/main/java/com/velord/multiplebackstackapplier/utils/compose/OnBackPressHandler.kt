@@ -12,11 +12,13 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import com.velord.multiplebackstackapplier.TAG
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -25,13 +27,15 @@ private const val DEFAULT_TIME = 0L
 
 @Composable
 fun MyBackHandler(enabled: Boolean = true, onBack: () -> Unit) {
-    Log.d("multiplebackstackapplier", "MyBackHandler")
+    Log.d(TAG, "MyBackHandler")
     // Safely update the current `onBack` lambda when a new one is provided
     val currentOnBack by rememberUpdatedState(onBack)
     // Remember in Composition a back callback that calls the `onBack` lambda
-    val backCallback = object : OnBackPressedCallback(enabled) {
-        override fun handleOnBackPressed() {
-            currentOnBack()
+    val backCallback = remember {
+        object : OnBackPressedCallback(enabled) {
+            override fun handleOnBackPressed() {
+                currentOnBack()
+            }
         }
     }
     // On every successful composition, update the callback with the `enabled` value
@@ -46,7 +50,7 @@ fun MyBackHandler(enabled: Boolean = true, onBack: () -> Unit) {
     // addCallback will be triggered when user leaves composition and return back a.k.a resubscribing
     DisposableEffect(lifecycleOwner, backDispatcher, enabled) {
         // Add callback to the backDispatcher
-        Log.d("multiplebackstackapplier", "addCallback")
+        Log.d(TAG, "addCallback")
         backDispatcher.addCallback(lifecycleOwner, backCallback)
         // When the effect leaves the Composition, remove the callback
         onDispose {
@@ -63,32 +67,32 @@ fun OnBackPressHandler(
     afterEdge: () -> Unit = {},
     onClick: suspend () -> Unit = {},
 ) {
-    Log.d("multiplebackstackapplier", "OnBackPressHandler")
+    Log.d(TAG, "OnBackPressHandler")
     val currentOnEdgeViolation by rememberUpdatedState(onEdgeViolation)
     val currentAfterEdge by rememberUpdatedState(afterEdge)
     val currentOnClick by rememberUpdatedState(onClick)
 
-    val timeShapshotState = remember {
-        mutableStateOf(DEFAULT_TIME)
+    val timeSnapshotState = remember {
+        mutableLongStateOf(DEFAULT_TIME)
     }
     val triggerState = remember {
-        mutableStateOf(DEFAULT_TIME)
+        mutableLongStateOf(DEFAULT_TIME)
     }
 
     MyBackHandler(enabled) {
-        triggerState.value = System.currentTimeMillis()
+        triggerState.longValue = System.currentTimeMillis()
     }
 
-    LaunchedEffect(key1 = triggerState.value) {
-        if (triggerState.value == DEFAULT_TIME) return@LaunchedEffect
+    LaunchedEffect(key1 = triggerState.longValue) {
+        if (triggerState.longValue == DEFAULT_TIME) return@LaunchedEffect
 
-        val isEdgeViolated = (timeShapshotState.value + duration) > System.currentTimeMillis()
+        val isEdgeViolated = (timeSnapshotState.longValue + duration) > System.currentTimeMillis()
         if (isEdgeViolated) currentOnEdgeViolation()
 
         launch {
             currentOnClick()
         }
-        timeShapshotState.value = System.currentTimeMillis()
+        timeSnapshotState.longValue = System.currentTimeMillis()
         delay(duration)
         currentAfterEdge()
     }
@@ -103,7 +107,7 @@ fun SnackBarOnBackPressHandler(
     onBackClickLessThanDuration: () -> Unit = {},
     content: @Composable (SnackbarData) -> Unit,
 ) {
-    val snackbarHostState = remember {
+    val snackBarHostState = remember {
         mutableStateOf(SnackbarHostState())
     }
 
@@ -112,10 +116,10 @@ fun SnackBarOnBackPressHandler(
         duration = duration,
         onEdgeViolation = onBackClickLessThanDuration,
         afterEdge = {
-            snackbarHostState.value.currentSnackbarData?.dismiss()
+            snackBarHostState.value.currentSnackbarData?.dismiss()
         },
         onClick = {
-            snackbarHostState.value.showSnackbar(
+            snackBarHostState.value.showSnackbar(
                 message = message,
                 duration = SnackbarDuration.Indefinite,
             )
@@ -123,7 +127,7 @@ fun SnackBarOnBackPressHandler(
     )
 
     SnackbarHost(
-        hostState = snackbarHostState.value,
+        hostState = snackBarHostState.value,
         modifier = modifier,
         snackbar = content
     )
