@@ -18,7 +18,7 @@ class RightGraphFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View = setContentWithTheme {
         AddNewScreen(R.string.add_new_screen_right) {
-            findNavController().navigate(R.id.toInDevelopmentFragment)
+            findNavController().navigate(R.id.toInDevelopmentFragmentFromRightGraphFragment)
         }
     }
 }
