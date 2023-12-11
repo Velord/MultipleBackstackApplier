@@ -40,6 +40,8 @@ import com.velord.multiplebackstackapplier.MultipleBackstack
 import com.velord.multiplebackstackapplier.utils.compose.SnackBarOnBackPressHandler
 import kotlinx.coroutines.launch
 
+private const val TAG = "multiplebackstackapplierDEMO"
+
 class BottomNavFragment : Fragment(R.layout.fragment_bottom_nav) {
 
     private val navController by lazy {
@@ -105,7 +107,7 @@ private fun BottomNavScreen(viewModel: BottomNavViewModel) {
     val tabFlow = viewModel.currentTabFlow.collectAsStateWithLifecycle()
     val isBackHandlingEnabledState =
         viewModel.isBackHandlingEnabledFlow.collectAsStateWithLifecycle()
-    Log.d("multiplebackstackapplier", "isBackHandlingEnabledState: ${isBackHandlingEnabledState.value}")
+    Log.d(TAG, "isBackHandlingEnabledState: ${isBackHandlingEnabledState.value}")
 
     Content(
         selectedItem = tabFlow.value,

@@ -17,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import com.velord.multiplebackstackapplier.TAG
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -25,7 +26,7 @@ private const val DEFAULT_TIME = 0L
 
 @Composable
 fun MyBackHandler(enabled: Boolean = true, onBack: () -> Unit) {
-    Log.d("multiplebackstackapplier", "MyBackHandler")
+    Log.d(TAG, "MyBackHandler")
     // Safely update the current `onBack` lambda when a new one is provided
     val currentOnBack by rememberUpdatedState(onBack)
     // Remember in Composition a back callback that calls the `onBack` lambda
@@ -46,7 +47,7 @@ fun MyBackHandler(enabled: Boolean = true, onBack: () -> Unit) {
     // addCallback will be triggered when user leaves composition and return back a.k.a resubscribing
     DisposableEffect(lifecycleOwner, backDispatcher, enabled) {
         // Add callback to the backDispatcher
-        Log.d("multiplebackstackapplier", "addCallback")
+        Log.d(TAG, "addCallback")
         backDispatcher.addCallback(lifecycleOwner, backCallback)
         // When the effect leaves the Composition, remove the callback
         onDispose {
@@ -63,7 +64,7 @@ fun OnBackPressHandler(
     afterEdge: () -> Unit = {},
     onClick: suspend () -> Unit = {},
 ) {
-    Log.d("multiplebackstackapplier", "OnBackPressHandler")
+    Log.d(TAG, "OnBackPressHandler")
     val currentOnEdgeViolation by rememberUpdatedState(onEdgeViolation)
     val currentAfterEdge by rememberUpdatedState(afterEdge)
     val currentOnClick by rememberUpdatedState(onClick)

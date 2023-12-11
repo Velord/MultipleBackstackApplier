@@ -18,7 +18,7 @@ afterEvaluate {
 }
 
 android {
-    namespace = "com.velord.composemultiplebackstack"
+    namespace = "com.velord.multiplebackstackapplier"
 
     compileSdk = libs.versions.targetApi.get().toInt()
 
