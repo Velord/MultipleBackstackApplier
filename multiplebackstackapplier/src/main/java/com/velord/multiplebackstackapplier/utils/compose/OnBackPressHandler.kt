@@ -12,6 +12,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
@@ -30,9 +31,11 @@ fun MyBackHandler(enabled: Boolean = true, onBack: () -> Unit) {
     // Safely update the current `onBack` lambda when a new one is provided
     val currentOnBack by rememberUpdatedState(onBack)
     // Remember in Composition a back callback that calls the `onBack` lambda
-    val backCallback = object : OnBackPressedCallback(enabled) {
-        override fun handleOnBackPressed() {
-            currentOnBack()
+    val backCallback = remember {
+        object : OnBackPressedCallback(enabled) {
+            override fun handleOnBackPressed() {
+                currentOnBack()
+            }
         }
     }
     // On every successful composition, update the callback with the `enabled` value
@@ -69,27 +72,27 @@ fun OnBackPressHandler(
     val currentAfterEdge by rememberUpdatedState(afterEdge)
     val currentOnClick by rememberUpdatedState(onClick)
 
-    val timeShapshotState = remember {
-        mutableStateOf(DEFAULT_TIME)
+    val timeSnapshotState = remember {
+        mutableLongStateOf(DEFAULT_TIME)
     }
     val triggerState = remember {
-        mutableStateOf(DEFAULT_TIME)
+        mutableLongStateOf(DEFAULT_TIME)
     }
 
     MyBackHandler(enabled) {
-        triggerState.value = System.currentTimeMillis()
+        triggerState.longValue = System.currentTimeMillis()
     }
 
-    LaunchedEffect(key1 = triggerState.value) {
-        if (triggerState.value == DEFAULT_TIME) return@LaunchedEffect
+    LaunchedEffect(key1 = triggerState.longValue) {
+        if (triggerState.longValue == DEFAULT_TIME) return@LaunchedEffect
 
-        val isEdgeViolated = (timeShapshotState.value + duration) > System.currentTimeMillis()
+        val isEdgeViolated = (timeSnapshotState.longValue + duration) > System.currentTimeMillis()
         if (isEdgeViolated) currentOnEdgeViolation()
 
         launch {
             currentOnClick()
         }
-        timeShapshotState.value = System.currentTimeMillis()
+        timeSnapshotState.longValue = System.currentTimeMillis()
         delay(duration)
         currentAfterEdge()
     }
@@ -104,7 +107,7 @@ fun SnackBarOnBackPressHandler(
     onBackClickLessThanDuration: () -> Unit = {},
     content: @Composable (SnackbarData) -> Unit,
 ) {
-    val snackbarHostState = remember {
+    val snackBarHostState = remember {
         mutableStateOf(SnackbarHostState())
     }
 
@@ -113,10 +116,10 @@ fun SnackBarOnBackPressHandler(
         duration = duration,
         onEdgeViolation = onBackClickLessThanDuration,
         afterEdge = {
-            snackbarHostState.value.currentSnackbarData?.dismiss()
+            snackBarHostState.value.currentSnackbarData?.dismiss()
         },
         onClick = {
-            snackbarHostState.value.showSnackbar(
+            snackBarHostState.value.showSnackbar(
                 message = message,
                 duration = SnackbarDuration.Indefinite,
             )
@@ -124,7 +127,7 @@ fun SnackBarOnBackPressHandler(
     )
 
     SnackbarHost(
-        hostState = snackbarHostState.value,
+        hostState = snackBarHostState.value,
         modifier = modifier,
         snackbar = content
     )

@@ -137,7 +137,7 @@ private fun Content(
             .navigationBarsPadding()
             .height(72.dp),
     ) {
-        BottomNavigationItem.values().forEach {
+        BottomNavigationItem.entries.forEach {
             val isSelected = selectedItem == it
             NavigationBarItem(
                 selected = isSelected,
