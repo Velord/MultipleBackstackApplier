@@ -8,17 +8,16 @@
     <fragment
         android:id="@+id/bottomNavFragment"
         android:name="com.velord.composemultiplebackstackdemo.ui.main.bottomNavigation.BottomNavFragment"
-        android:label="BottomNavFragment">
-
-        <action
-            android:id="@+id/toInDevelopmentFragment"
-            app:destination="@id/inDevelopmentFragment"
-            />
-    </fragment>
+        android:label="BottomNavFragment"/>
 
     <fragment
         android:id="@+id/inDevelopmentFragment"
-        android:name="com.velord.composemultiplebackstackdemo.ui.main.inDevelopment.InDevelopmentFragment"
+        android:name="com.velord.composemultiplebackstackdemo.ui.main.overlay.OverlayFragment"
         android:label="InDevelopmentFragment" />
+
+    <action
+        android:id="@+id/toInDevelopmentFragment"
+        app:destination="@id/inDevelopmentFragment"
+        />
 
 </navigation>

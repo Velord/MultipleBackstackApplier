@@ -18,7 +18,7 @@ class CenterGraphFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View = setContentWithTheme {
         AddNewScreen(R.string.add_new_screen_center) {
-            findNavController().navigate(R.id.toInDevelopmentFragment)
+            findNavController().navigate(R.id.toInDevelopmentFragmentFromCenterGraphFragment)
         }
     }
 }

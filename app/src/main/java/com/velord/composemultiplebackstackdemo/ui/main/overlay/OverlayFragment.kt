@@ -1,4 +1,4 @@
-package com.velord.composemultiplebackstackdemo.ui.main.inDevelopment
+package com.velord.composemultiplebackstackdemo.ui.main.overlay
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -24,16 +24,16 @@ import com.velord.composemultiplebackstackdemo.ui.utils.activityNavController
 import com.velord.composemultiplebackstackdemo.ui.utils.viewLifecycleScope
 import kotlinx.coroutines.launch
 
-class InDevelopmentFragment : Fragment() {
+class OverlayFragment : Fragment() {
 
-    private val viewModel by viewModels<InDevelopmentViewModel>()
+    private val viewModel by viewModels<OverlayViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = setContentWithTheme {
-        InDevelopmentScreen(viewModel)
+        OverlayScreen(viewModel)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -51,7 +51,7 @@ class InDevelopmentFragment : Fragment() {
 }
 
 @Composable
-private fun InDevelopmentScreen(viewModel: InDevelopmentViewModel) {
+private fun OverlayScreen(viewModel: OverlayViewModel) {
     val time = remember { System.currentTimeMillis().toString() }
     Box(Modifier.fillMaxSize()) {
         Text(
@@ -71,6 +71,6 @@ private fun InDevelopmentScreen(viewModel: InDevelopmentViewModel) {
 
 @Preview
 @Composable
-private fun InDevelopmentScreenPreview() {
-    InDevelopmentScreen(InDevelopmentViewModel())
+private fun OverlayScreenPreview() {
+    OverlayScreen(OverlayViewModel())
 }
