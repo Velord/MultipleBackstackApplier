@@ -2,7 +2,10 @@ package com.velord.composemultiplebackstackdemo.ui.main.bottomNavigation
 
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.View
+import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -14,7 +17,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
-import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
@@ -22,7 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
@@ -37,8 +39,8 @@ import com.velord.composemultiplebackstackdemo.ui.compose.theme.setContentWithTh
 import com.velord.composemultiplebackstackdemo.ui.navigation.BottomNavigationItem
 import com.velord.composemultiplebackstackdemo.ui.utils.viewLifecycleScope
 import com.velord.multiplebackstackapplier.MultipleBackstack
-import com.velord.multiplebackstackapplier.utils.compose.SnackBarOnBackPressHandler
 import kotlinx.coroutines.launch
+
 
 private const val TAG = "multiplebackstackapplierDEMO"
 
@@ -114,17 +116,34 @@ private fun BottomNavScreen(viewModel: BottomNavViewModel) {
         onClick = viewModel::onTabClick,
     )
 
-    val str = stringResource(id = R.string.press_again_to_exit)
-    SnackBarOnBackPressHandler(
-        message = str,
-        modifier = Modifier.padding(horizontal = 8.dp),
-        enabled = isBackHandlingEnabledState.value,
-        onBackClickLessThanDuration = viewModel::onBackDoubleClick,
-    ) {
-        Snackbar {
-            Text(text = it.visuals.message)
+
+    // You might think that my code is buggy so I commented it.
+    // Instead of I added BackHandler from androidx.activity.compose with simple Toast
+    val context = LocalContext.current
+    BackHandler(isBackHandlingEnabledState.value) {
+        val description = "I am at the first destination of the graph"
+        Toast.makeText(context, description, Toast.LENGTH_SHORT).apply {
+            setGravity(Gravity.CENTER_VERTICAL, 0, 0)
+            show()
         }
     }
+
+    /*
+        SnackBarOnBackPressHandler is prepared for testing with
+        BackHandler from androidx.activity.compose
+        just uncomment it to see yourself it doesn't work
+     */
+//    val str = stringResource(id = R.string.press_again_to_exit)
+//    SnackBarOnBackPressHandler(
+//        message = str,
+//        modifier = Modifier.padding(horizontal = 8.dp),
+//        enabled = isBackHandlingEnabledState.value,
+//        onBackClickLessThanDuration = viewModel::onBackDoubleClick,
+//    ) {
+//        Snackbar {
+//            Text(text = it.visuals.message)
+//        }
+//    }
 }
 
 @Composable

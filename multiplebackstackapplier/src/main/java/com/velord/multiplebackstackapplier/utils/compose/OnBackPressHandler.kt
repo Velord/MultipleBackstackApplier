@@ -2,6 +2,7 @@ package com.velord.multiplebackstackapplier.utils.compose
 
 import android.util.Log
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.material3.SnackbarData
 import androidx.compose.material3.SnackbarDuration
@@ -79,7 +80,8 @@ fun OnBackPressHandler(
         mutableLongStateOf(DEFAULT_TIME)
     }
 
-    MyBackHandler(enabled) {
+    // Instead of my MyBackHandler let's use from androidx.activity.compose
+    BackHandler(enabled) {
         triggerState.longValue = System.currentTimeMillis()
     }
 

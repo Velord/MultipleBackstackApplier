@@ -104,6 +104,7 @@ dependencies {
     // Templates
     implementation(libs.bundles.kotlin.module)
     implementation(libs.bundles.androidx.module)
+    implementation(libs.bundles.androidx.activity)
     // Compose
     implementation(libs.bundles.compose.material.third)
     implementation(libs.bundles.compose.ui)
