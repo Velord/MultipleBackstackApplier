@@ -10,6 +10,7 @@
         android:name="com.velord.composemultiplebackstackdemo.ui.main.bottomNavigation.BottomNavFragment"
         android:label="BottomNavFragment"/>
 
+
     <fragment
         android:id="@+id/inDevelopmentFragment"
         android:name="com.velord.composemultiplebackstackdemo.ui.main.overlay.OverlayFragment"

@@ -1,8 +1,12 @@
 package com.velord.composemultiplebackstackdemo.ui.main.bottomNavigation
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.View
+import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -38,10 +42,35 @@ import com.velord.composemultiplebackstackdemo.ui.navigation.BottomNavigationIte
 import com.velord.composemultiplebackstackdemo.ui.utils.viewLifecycleScope
 import com.velord.multiplebackstackapplier.MultipleBackstack
 import com.velord.multiplebackstackapplier.utils.compose.SnackBarOnBackPressHandler
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
-private const val TAG = "multiplebackstackapplierDEMO"
+private const val TAG = "BottomNav"
 
+private fun Context.fireToast(text: String) {
+    val description = "I am at the first at $text"
+    Toast.makeText(this, description, Toast.LENGTH_SHORT).apply {
+        setGravity(Gravity.CENTER_VERTICAL, 0, 0)
+        show()
+    }
+}
+
+internal fun Fragment.addTestCallback(
+    tag: String,
+    viewModel: BottomNavViewModel
+) {
+    requireActivity().onBackPressedDispatcher.addCallback(
+        this,
+        true
+    ) {
+        requireContext().fireToast(tag)
+        isEnabled = false
+        viewModel.graphCompletedHandling()
+        Log.d(TAG, "onBackPressedDispatcher")
+    }
+}
+
+@AndroidEntryPoint
 class BottomNavFragment : Fragment(R.layout.fragment_bottom_nav) {
 
     private val navController by lazy {
@@ -105,24 +134,25 @@ class BottomNavFragment : Fragment(R.layout.fragment_bottom_nav) {
 @Composable
 private fun BottomNavScreen(viewModel: BottomNavViewModel) {
     val tabFlow = viewModel.currentTabFlow.collectAsStateWithLifecycle()
-    val isBackHandlingEnabledState =
-        viewModel.isBackHandlingEnabledFlow.collectAsStateWithLifecycle()
-    Log.d(TAG, "isBackHandlingEnabledState: ${isBackHandlingEnabledState.value}")
+    val backHandlingState = viewModel.backHandlingStateFlow.collectAsStateWithLifecycle()
+    Log.d(TAG, "isBackHandlingEnabledState: ${backHandlingState.value}")
 
     Content(
         selectedItem = tabFlow.value,
         onClick = viewModel::onTabClick,
     )
 
-    val str = stringResource(id = R.string.press_again_to_exit)
-    SnackBarOnBackPressHandler(
-        message = str,
-        modifier = Modifier.padding(horizontal = 8.dp),
-        enabled = isBackHandlingEnabledState.value,
-        onBackClickLessThanDuration = viewModel::onBackDoubleClick,
-    ) {
-        Snackbar {
-            Text(text = it.visuals.message)
+    if (backHandlingState.value.isEnabled) {
+        val str = stringResource(id = R.string.press_again_to_exit)
+        SnackBarOnBackPressHandler(
+            message = str,
+            modifier = Modifier.padding(horizontal = 8.dp),
+            enabled = backHandlingState.value.isEnabled,
+            onBackClickLessThanDuration = viewModel::onBackDoubleClick,
+        ) {
+            Snackbar {
+                Text(text = it.visuals.message)
+            }
         }
     }
 }

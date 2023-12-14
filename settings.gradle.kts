@@ -12,4 +12,3 @@ dependencyResolutionManagement {
         }
     }
 }
-include(":composemultiplebackstack")

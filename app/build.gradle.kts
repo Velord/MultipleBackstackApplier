@@ -2,12 +2,13 @@ plugins {
     id(libs.plugins.android.application.get().pluginId)
     id(libs.plugins.kotlin.android.get().pluginId)
     id(libs.plugins.kotlin.kapt.get().pluginId)
+    id(libs.plugins.dagger.hilt.get().pluginId)
 }
 
 // When app incompatible with previous version change this value
 val globalVersion = 0
 // When you create huge feature(or many) release change this value
-val majorVersion = 3
+val majorVersion = 5
 // When you create feature release change this value
 val minorVersion = 0
 // When you create fix change this value
@@ -104,10 +105,15 @@ dependencies {
     // Templates
     implementation(libs.bundles.kotlin.module)
     implementation(libs.bundles.androidx.module)
+    implementation(libs.bundles.androidx.activity)
     // Compose
     implementation(libs.bundles.compose.material.third)
     implementation(libs.bundles.compose.ui)
     implementation(libs.bundles.compose.accompanist.core)
+    // DI
+    implementation(libs.bundles.dagger.all)
+    kapt(libs.bundles.dagger.kapt)
+    kapt(libs.hilt.compiler)
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class).all {
