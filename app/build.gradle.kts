@@ -8,7 +8,7 @@ plugins {
 // When app incompatible with previous version change this value
 val globalVersion = 0
 // When you create huge feature(or many) release change this value
-val majorVersion = 3
+val majorVersion = 5
 // When you create feature release change this value
 val minorVersion = 0
 // When you create fix change this value
