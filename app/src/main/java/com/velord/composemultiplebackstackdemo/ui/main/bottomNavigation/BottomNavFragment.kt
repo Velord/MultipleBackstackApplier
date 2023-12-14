@@ -1,10 +1,12 @@
 package com.velord.composemultiplebackstackdemo.ui.main.bottomNavigation
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
@@ -41,8 +43,15 @@ import com.velord.composemultiplebackstackdemo.ui.utils.viewLifecycleScope
 import com.velord.multiplebackstackapplier.MultipleBackstack
 import kotlinx.coroutines.launch
 
+internal const val TAG = "!DEMO"
 
-private const val TAG = "multiplebackstackapplierDEMO"
+internal fun Context.fireToast(text: String) {
+    val description = "I am at the first at $text"
+    Toast.makeText(this, description, Toast.LENGTH_SHORT).apply {
+        setGravity(Gravity.CENTER_VERTICAL, 0, 0)
+        show()
+    }
+}
 
 class BottomNavFragment : Fragment(R.layout.fragment_bottom_nav) {
 
@@ -66,6 +75,8 @@ class BottomNavFragment : Fragment(R.layout.fragment_bottom_nav) {
         )
     }
 
+    private var backkPressCallback: OnBackPressedCallback? = null
+
     override fun onDestroy() {
         binding = null
         lifecycle.removeObserver(multipleBackStack)
@@ -75,6 +86,14 @@ class BottomNavFragment : Fragment(R.layout.fragment_bottom_nav) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         lifecycle.addObserver(multipleBackStack)
+
+        Log.d(TAG, "onCreate")
+//        backkPressCallback = requireActivity().onBackPressedDispatcher.addCallback(
+//            this,
+//            true
+//        ) {
+//            requireContext().fireToast("bottom nav")
+//        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -96,8 +115,16 @@ class BottomNavFragment : Fragment(R.layout.fragment_bottom_nav) {
     private fun initObserving() {
         viewLifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.finishAppEvent.collect {
-                    requireActivity().finish()
+                launch {
+                    viewModel.finishAppEvent.collect {
+                        requireActivity().finish()
+                    }
+                }
+                launch {
+//                    viewModel.isBackHandlingEnabledFlow.collect {
+//                        Log.d(TAG, "isBackHandlingEnabledState from initObserving: $it")
+//                        backkPressCallback?.isEnabled = it
+//                    }
                 }
             }
         }
@@ -109,7 +136,7 @@ private fun BottomNavScreen(viewModel: BottomNavViewModel) {
     val tabFlow = viewModel.currentTabFlow.collectAsStateWithLifecycle()
     val isBackHandlingEnabledState =
         viewModel.isBackHandlingEnabledFlow.collectAsStateWithLifecycle()
-    Log.d(TAG, "isBackHandlingEnabledState: ${isBackHandlingEnabledState.value}")
+    //Log.d(TAG, "isBackHandlingEnabledState: ${isBackHandlingEnabledState.value}")
 
     Content(
         selectedItem = tabFlow.value,
@@ -119,12 +146,14 @@ private fun BottomNavScreen(viewModel: BottomNavViewModel) {
 
     // You might think that my code is buggy so I commented it.
     // Instead of I added BackHandler from androidx.activity.compose with simple Toast
-    val context = LocalContext.current
-    BackHandler(isBackHandlingEnabledState.value) {
-        val description = "I am at the first destination of the graph"
-        Toast.makeText(context, description, Toast.LENGTH_SHORT).apply {
-            setGravity(Gravity.CENTER_VERTICAL, 0, 0)
-            show()
+    if (isBackHandlingEnabledState.value) {
+        val context = LocalContext.current
+        BackHandler {
+            val description = "I am at the first destination of the graph"
+            Toast.makeText(context, description, Toast.LENGTH_SHORT).apply {
+                setGravity(Gravity.CENTER_VERTICAL, 0, 0)
+                show()
+            }
         }
     }
 
