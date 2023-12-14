@@ -1,24 +1,23 @@
 package com.velord.composemultiplebackstackdemo.ui.main.bottomNavigation.center
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
-import androidx.navigation.navGraphViewModels
 import com.velord.composemultiplebackstackdemo.R
 import com.velord.composemultiplebackstackdemo.ui.compose.screen.AddNewScreen
 import com.velord.composemultiplebackstackdemo.ui.compose.theme.setContentWithTheme
 import com.velord.composemultiplebackstackdemo.ui.main.bottomNavigation.BottomNavViewModel
-import com.velord.composemultiplebackstackdemo.ui.main.bottomNavigation.TAG
-import com.velord.composemultiplebackstackdemo.ui.main.bottomNavigation.fireToast
+import com.velord.composemultiplebackstackdemo.ui.main.bottomNavigation.addTestCallback
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class CenterGraphFragment : Fragment() {
 
-    private val viewModel by navGraphViewModels<BottomNavViewModel>(R.id.bottom_nav_graph)
+    private val viewModel by viewModels<BottomNavViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,13 +31,6 @@ class CenterGraphFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        requireActivity().onBackPressedDispatcher.addCallback(
-            this,
-            true
-        ) {
-            requireContext().fireToast("center")
-            Log.d(TAG, "onBackPressedDispatcher")
-        }
+        addTestCallback("right", viewModel)
     }
 }

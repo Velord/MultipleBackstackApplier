@@ -6,8 +6,7 @@ import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.compose.BackHandler
+import androidx.activity.addCallback
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -19,6 +18,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
@@ -26,7 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
@@ -41,11 +41,13 @@ import com.velord.composemultiplebackstackdemo.ui.compose.theme.setContentWithTh
 import com.velord.composemultiplebackstackdemo.ui.navigation.BottomNavigationItem
 import com.velord.composemultiplebackstackdemo.ui.utils.viewLifecycleScope
 import com.velord.multiplebackstackapplier.MultipleBackstack
+import com.velord.multiplebackstackapplier.utils.compose.SnackBarOnBackPressHandler
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
-internal const val TAG = "!DEMO"
+internal const val TAG = "BottomNav"
 
-internal fun Context.fireToast(text: String) {
+private fun Context.fireToast(text: String) {
     val description = "I am at the first at $text"
     Toast.makeText(this, description, Toast.LENGTH_SHORT).apply {
         setGravity(Gravity.CENTER_VERTICAL, 0, 0)
@@ -53,6 +55,22 @@ internal fun Context.fireToast(text: String) {
     }
 }
 
+internal fun Fragment.addTestCallback(
+    tag: String,
+    viewModel: BottomNavViewModel
+) {
+    requireActivity().onBackPressedDispatcher.addCallback(
+        this,
+        true
+    ) {
+        requireContext().fireToast(tag)
+        isEnabled = false
+        viewModel.firstFired()
+        Log.d(TAG, "onBackPressedDispatcher")
+    }
+}
+
+@AndroidEntryPoint
 class BottomNavFragment : Fragment(R.layout.fragment_bottom_nav) {
 
     private val navController by lazy {
@@ -75,8 +93,6 @@ class BottomNavFragment : Fragment(R.layout.fragment_bottom_nav) {
         )
     }
 
-    private var backkPressCallback: OnBackPressedCallback? = null
-
     override fun onDestroy() {
         binding = null
         lifecycle.removeObserver(multipleBackStack)
@@ -86,14 +102,6 @@ class BottomNavFragment : Fragment(R.layout.fragment_bottom_nav) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         lifecycle.addObserver(multipleBackStack)
-
-        Log.d(TAG, "onCreate")
-//        backkPressCallback = requireActivity().onBackPressedDispatcher.addCallback(
-//            this,
-//            true
-//        ) {
-//            requireContext().fireToast("bottom nav")
-//        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -115,16 +123,8 @@ class BottomNavFragment : Fragment(R.layout.fragment_bottom_nav) {
     private fun initObserving() {
         viewLifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                launch {
-                    viewModel.finishAppEvent.collect {
-                        requireActivity().finish()
-                    }
-                }
-                launch {
-//                    viewModel.isBackHandlingEnabledFlow.collect {
-//                        Log.d(TAG, "isBackHandlingEnabledState from initObserving: $it")
-//                        backkPressCallback?.isEnabled = it
-//                    }
+                viewModel.finishAppEvent.collect {
+                    requireActivity().finish()
                 }
             }
         }
@@ -134,45 +134,27 @@ class BottomNavFragment : Fragment(R.layout.fragment_bottom_nav) {
 @Composable
 private fun BottomNavScreen(viewModel: BottomNavViewModel) {
     val tabFlow = viewModel.currentTabFlow.collectAsStateWithLifecycle()
-    val isBackHandlingEnabledState =
-        viewModel.isBackHandlingEnabledFlow.collectAsStateWithLifecycle()
-    //Log.d(TAG, "isBackHandlingEnabledState: ${isBackHandlingEnabledState.value}")
+    val backHandlingState = viewModel.backHandlingStateFlow.collectAsStateWithLifecycle()
+    Log.d(TAG, "isBackHandlingEnabledState: ${backHandlingState.value}")
 
     Content(
         selectedItem = tabFlow.value,
         onClick = viewModel::onTabClick,
     )
 
-
-    // You might think that my code is buggy so I commented it.
-    // Instead of I added BackHandler from androidx.activity.compose with simple Toast
-    if (isBackHandlingEnabledState.value) {
-        val context = LocalContext.current
-        BackHandler {
-            val description = "I am at the first destination of the graph"
-            Toast.makeText(context, description, Toast.LENGTH_SHORT).apply {
-                setGravity(Gravity.CENTER_VERTICAL, 0, 0)
-                show()
+    if (backHandlingState.value.isEnabled) {
+        val str = stringResource(id = R.string.press_again_to_exit)
+        SnackBarOnBackPressHandler(
+            message = str,
+            modifier = Modifier.padding(horizontal = 8.dp),
+            enabled = backHandlingState.value.isEnabled,
+            onBackClickLessThanDuration = viewModel::onBackDoubleClick,
+        ) {
+            Snackbar {
+                Text(text = it.visuals.message)
             }
         }
     }
-
-    /*
-        SnackBarOnBackPressHandler is prepared for testing with
-        BackHandler from androidx.activity.compose
-        just uncomment it to see yourself it doesn't work
-     */
-//    val str = stringResource(id = R.string.press_again_to_exit)
-//    SnackBarOnBackPressHandler(
-//        message = str,
-//        modifier = Modifier.padding(horizontal = 8.dp),
-//        enabled = isBackHandlingEnabledState.value,
-//        onBackClickLessThanDuration = viewModel::onBackDoubleClick,
-//    ) {
-//        Snackbar {
-//            Text(text = it.visuals.message)
-//        }
-//    }
 }
 
 @Composable

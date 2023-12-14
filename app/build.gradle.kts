@@ -2,6 +2,7 @@ plugins {
     id(libs.plugins.android.application.get().pluginId)
     id(libs.plugins.kotlin.android.get().pluginId)
     id(libs.plugins.kotlin.kapt.get().pluginId)
+    id(libs.plugins.dagger.hilt.get().pluginId)
 }
 
 // When app incompatible with previous version change this value
@@ -109,6 +110,10 @@ dependencies {
     implementation(libs.bundles.compose.material.third)
     implementation(libs.bundles.compose.ui)
     implementation(libs.bundles.compose.accompanist.core)
+    // DI
+    implementation(libs.bundles.dagger.all)
+    kapt(libs.bundles.dagger.kapt)
+    kapt(libs.hilt.compiler)
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class).all {
