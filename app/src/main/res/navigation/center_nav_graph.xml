@@ -10,13 +10,13 @@
         android:label="CenterGraphFragment" >
 
         <action
-            android:id="@+id/toInDevelopmentFragment"
+            android:id="@+id/toInDevelopmentFragmentFromCenterGraphFragment"
             app:destination="@id/inDevelopmentFragment"/>
     </fragment>
 
     <fragment
         android:id="@+id/inDevelopmentFragment"
-        android:name="com.velord.composemultiplebackstackdemo.ui.main.inDevelopment.InDevelopmentFragment"
+        android:name="com.velord.composemultiplebackstackdemo.ui.main.overlay.OverlayFragment"
         android:label="InDevelopmentFragment" />
 
 </navigation>

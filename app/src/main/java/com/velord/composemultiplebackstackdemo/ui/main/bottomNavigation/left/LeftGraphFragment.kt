@@ -28,7 +28,7 @@ class LeftGraphFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View = setContentWithTheme {
         AddNewScreen(R.string.add_new_screen_left) {
-            findNavController().navigate(R.id.toInDevelopmentFragment)
+            findNavController().navigate(R.id.toInDevelopmentFragmentFromLeftGraphFragment)
         }
     }
 
