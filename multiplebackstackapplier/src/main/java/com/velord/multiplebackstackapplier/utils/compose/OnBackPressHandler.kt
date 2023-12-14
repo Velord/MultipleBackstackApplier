@@ -1,6 +1,5 @@
 package com.velord.multiplebackstackapplier.utils.compose
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.material3.SnackbarData
 import androidx.compose.material3.SnackbarDuration
@@ -14,7 +13,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
-import com.velord.multiplebackstackapplier.TAG
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -29,7 +27,6 @@ fun OnBackPressHandler(
     afterEdge: () -> Unit = {},
     onClick: suspend () -> Unit = {},
 ) {
-    Log.d(TAG, "OnBackPressHandler")
     val currentOnEdgeViolation by rememberUpdatedState(onEdgeViolation)
     val currentAfterEdge by rememberUpdatedState(afterEdge)
     val currentOnClick by rememberUpdatedState(onClick)

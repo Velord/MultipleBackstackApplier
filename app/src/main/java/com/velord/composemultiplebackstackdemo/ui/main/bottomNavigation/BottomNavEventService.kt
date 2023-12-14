@@ -2,7 +2,7 @@ package com.velord.composemultiplebackstackdemo.ui.main.bottomNavigation
 
 import kotlinx.coroutines.flow.MutableStateFlow
 
-data class BottomNavBackHandlingEnabledState(
+data class BottomNavBackHandlingState(
     val isAtStartGraphDestination: Boolean = true,
     val isGrantedToProceed: Boolean = false
 ) {
@@ -10,9 +10,9 @@ data class BottomNavBackHandlingEnabledState(
 }
 
 object BottomNavEventService {
-    val backHandlingStateFlow = MutableStateFlow(BottomNavBackHandlingEnabledState())
+    val backHandlingStateFlow = MutableStateFlow(BottomNavBackHandlingState())
 
-    fun updateBackHandlingState(newState: BottomNavBackHandlingEnabledState) {
+    fun updateBackHandlingState(newState: BottomNavBackHandlingState) {
         backHandlingStateFlow.value =  newState
     }
 }

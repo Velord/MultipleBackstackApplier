@@ -14,6 +14,8 @@ import com.velord.composemultiplebackstackdemo.ui.main.bottomNavigation.BottomNa
 import com.velord.composemultiplebackstackdemo.ui.main.bottomNavigation.addTestCallback
 import dagger.hilt.android.AndroidEntryPoint
 
+private const val TAG = "left"
+
 @AndroidEntryPoint
 class LeftGraphFragment : Fragment() {
 
@@ -31,6 +33,6 @@ class LeftGraphFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        addTestCallback("right", viewModel)
+        addTestCallback(TAG, viewModel)
     }
 }

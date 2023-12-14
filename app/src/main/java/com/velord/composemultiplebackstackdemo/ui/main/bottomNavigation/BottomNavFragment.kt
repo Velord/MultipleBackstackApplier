@@ -45,7 +45,7 @@ import com.velord.multiplebackstackapplier.utils.compose.SnackBarOnBackPressHand
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
-internal const val TAG = "BottomNav"
+private const val TAG = "BottomNav"
 
 private fun Context.fireToast(text: String) {
     val description = "I am at the first at $text"
@@ -65,7 +65,7 @@ internal fun Fragment.addTestCallback(
     ) {
         requireContext().fireToast(tag)
         isEnabled = false
-        viewModel.firstFired()
+        viewModel.graphCompletedHandling()
         Log.d(TAG, "onBackPressedDispatcher")
     }
 }

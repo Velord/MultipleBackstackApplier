@@ -14,6 +14,8 @@ import com.velord.composemultiplebackstackdemo.ui.main.bottomNavigation.BottomNa
 import com.velord.composemultiplebackstackdemo.ui.main.bottomNavigation.addTestCallback
 import dagger.hilt.android.AndroidEntryPoint
 
+private const val TAG = "right"
+
 @AndroidEntryPoint
 class RightGraphFragment : Fragment() {
 
@@ -24,8 +26,8 @@ class RightGraphFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = setContentWithTheme {
-        viewModel.firstCreated()
-        addTestCallback("right", viewModel)
+        viewModel.graphTakeResponsibility()
+        addTestCallback(TAG, viewModel)
 
         AddNewScreen(R.string.add_new_screen_right) {
             findNavController().navigate(R.id.toInDevelopmentFragmentFromRightGraphFragment)

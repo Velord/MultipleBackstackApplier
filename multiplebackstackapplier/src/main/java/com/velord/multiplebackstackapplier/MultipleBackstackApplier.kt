@@ -43,7 +43,7 @@ object MultipleBackstackApplier {
         onChangeDestination: (MenuItem) -> Unit
     ): NavController.OnDestinationChangedListener = NavController.OnDestinationChangedListener {
             _, destination, _ ->
-        Log.d(TAG, "OnDestinationChangedListener: ${destination}")
+        Log.d(TAG, "OnDestinationChangedListener: $destination")
         menu.forEach { item ->
             if (destination.matchDestination(item.itemId)) {
                 item.isChecked = true
@@ -76,13 +76,11 @@ class MultipleBackstack(
     }
 
     override fun onPause(owner: LifecycleOwner) {
-        Log.d(TAG, "onPause")
         super.onPause(owner)
         navController.value.removeOnDestinationChangedListener(listener)
     }
 
     override fun onResume(owner: LifecycleOwner) {
-        Log.d(TAG, "onResume")
         navController.value.addOnDestinationChangedListener(listener)
         super.onResume(owner)
     }
@@ -90,10 +88,9 @@ class MultipleBackstack(
     private fun observe() {
         lifecycleOwner.lifecycleScope.launch {
             lifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                Log.d(TAG, "Lifecycle.State.STARTED")
                 flowOnSelect.collectLatest { navItem ->
                     val menuItem = menu.findItem(navItem.navigationGraphId)
-                    Log.d(TAG, "menuItem: ${menuItem}")
+                    Log.d(TAG, "menuItem: $menuItem")
                     Log.d(TAG, "start: ${navController.value.graph.findStartDestination().id}")
                     NavigationUI.onNavDestinationSelected(
                         item = menuItem,

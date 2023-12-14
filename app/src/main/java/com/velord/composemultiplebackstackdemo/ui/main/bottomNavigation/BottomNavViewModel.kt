@@ -37,13 +37,16 @@ class BottomNavViewModel @Inject constructor(
         bottomNavEventService.updateBackHandlingState(newState)
     }
 
-    fun firstFired() {
-        val newState = backHandlingStateFlow.value.copy(isGrantedToProceed = true)
+    private fun changeGrantedToProceed(isGranted: Boolean) {
+        val newState = backHandlingStateFlow.value.copy(isGrantedToProceed = isGranted)
         bottomNavEventService.updateBackHandlingState(newState)
     }
 
-    fun firstCreated() {
-        val newState = backHandlingStateFlow.value.copy(isGrantedToProceed = false)
-        bottomNavEventService.updateBackHandlingState(newState)
+    fun graphCompletedHandling() {
+        changeGrantedToProceed(true)
+    }
+
+    fun graphTakeResponsibility() {
+        changeGrantedToProceed(false)
     }
 }
