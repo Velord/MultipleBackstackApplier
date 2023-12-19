@@ -4,15 +4,22 @@ plugins {
     id("maven-publish")
 }
 
-afterEvaluate {
-    publishing {
-        publications {
-            create<MavenPublication>("maven") {
-                groupId = "com.github.Velord"
-                artifactId = "MultipleBackstackApplier"
-                version = "0.5.0"
+publishing {
+    publications {
+        register<MavenPublication>("release") {
+            groupId = "com.github.Velord"
+            artifactId = "MultipleBackstackApplier"
+            version = "0.5.5"
+
+            afterEvaluate {
                 from(components["release"])
             }
+        }
+    }
+    repositories {
+        maven {
+            name = "test"
+            url = uri("${project.buildDir}/repo")
         }
     }
 }
@@ -56,15 +63,4 @@ dependencies {
     implementation(libs.bundles.androidx.navigation)
     // Compose
     implementation(libs.bundles.compose.material.third)
-}
-
-// https://slack-chats.kotlinlang.org/t/9025044/after-updating-my-project-to-kotlin-1-8-0-i-m-getting-the-fo
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    kotlinOptions {
-        jvmTarget = libs.versions.jvmTarget.get()
-    }
-}
-
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class).all {
-    kotlinOptions.freeCompilerArgs = listOf("-Xcontext-receivers")
 }
