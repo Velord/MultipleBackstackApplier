@@ -9,17 +9,11 @@ publishing {
         register<MavenPublication>("release") {
             groupId = "com.github.Velord"
             artifactId = "MultipleBackstackApplier"
-            version = "0.5.5"
+            version = "0.5.9"
 
             afterEvaluate {
                 from(components["release"])
             }
-        }
-    }
-    repositories {
-        maven {
-            name = "test"
-            url = uri("${project.buildDir}/repo")
         }
     }
 }
@@ -32,8 +26,11 @@ android {
     defaultConfig {
         minSdk = libs.versions.minApi.get().toInt()
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+
+        aarMetadata {
+            minCompileSdk = libs.versions.minApi.get().toInt()
+        }
     }
 
     buildTypes {
@@ -45,15 +42,18 @@ android {
             )
         }
     }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
     kotlinOptions {
-        jvmTarget = libs.versions.jvmTarget.get()
+        jvmTarget = "1.8"
     }
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
     }
     buildFeatures {
         compose = true
-        viewBinding = true
     }
 }
 

@@ -1,6 +1,6 @@
 [versions]
 # API
-minApi = "29"
+minApi = "25"
 targetApi = "34"
 # Build
 buildTools = "30.0.3"

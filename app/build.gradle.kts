@@ -59,27 +59,27 @@ android {
     productFlavors {
         val currentVersion = globalVersion * 100000 + majorVersion * 10000 + minorVersion * 1000 + fixVersion * 100
         create("develop") {
+            manifestPlaceholders += mapOf()
             dimension = "environment"
             manifestPlaceholders["enableCrashReporting"] = false
             applicationIdSuffix = ".develop"
-            buildConfigField("String", "CURRENT_VERSION", "\"${currentVersion}\"")
         }
         create("qa") {
+            manifestPlaceholders += mapOf()
             dimension = "environment"
             manifestPlaceholders["enableCrashReporting"] = true
             applicationIdSuffix = ".develop"
-            buildConfigField("String", "CURRENT_VERSION", "\"${currentVersion}\"")
         }
         create("stage") {
+            manifestPlaceholders += mapOf()
             dimension = "environment"
             manifestPlaceholders["enableCrashReporting"] = true
             applicationIdSuffix = ".stage"
-            buildConfigField("String", "CURRENT_VERSION", "\"${currentVersion}\"")
         }
         create("production") {
+            manifestPlaceholders += mapOf()
             dimension = "environment"
             manifestPlaceholders["enableCrashReporting"] = true
-            buildConfigField("String", "CURRENT_VERSION", "\"${currentVersion}\"")
         }
     }
 
@@ -93,6 +93,7 @@ android {
     buildFeatures {
         compose = true
         viewBinding = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
@@ -118,11 +119,4 @@ dependencies {
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class).all {
     kotlinOptions.freeCompilerArgs = listOf("-Xcontext-receivers")
-}
-
-// https://slack-chats.kotlinlang.org/t/9025044/after-updating-my-project-to-kotlin-1-8-0-i-m-getting-the-fo
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    kotlinOptions {
-        jvmTarget = libs.versions.jvmTarget.get()
-    }
 }
