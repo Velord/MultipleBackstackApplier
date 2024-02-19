@@ -30,7 +30,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
@@ -42,8 +41,8 @@ import com.velord.composemultiplebackstackdemo.ui.navigation.BottomNavigationIte
 import com.velord.composemultiplebackstackdemo.ui.utils.viewLifecycleScope
 import com.velord.multiplebackstackapplier.MultipleBackstack
 import com.velord.multiplebackstackapplier.utils.compose.SnackBarOnBackPressHandler
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 private const val TAG = "BottomNav"
 
@@ -70,13 +69,12 @@ internal fun Fragment.addTestCallback(
     }
 }
 
-@AndroidEntryPoint
 class BottomNavFragment : Fragment(R.layout.fragment_bottom_nav) {
 
     private val navController by lazy {
         childFragmentManager.fragments.first().findNavController()
     }
-    private val viewModel by viewModels<BottomNavViewModel>()
+    private val viewModel by viewModel<BottomNavViewModel>()
     private var binding: FragmentBottomNavBinding? = null
 
     private val multipleBackStack by lazy {

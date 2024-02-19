@@ -1,8 +1,13 @@
 plugins {
     id(libs.plugins.android.application.get().pluginId)
     id(libs.plugins.kotlin.android.get().pluginId)
-    id(libs.plugins.kotlin.kapt.get().pluginId)
-    id(libs.plugins.dagger.hilt.get().pluginId)
+   // id(libs.plugins.kotlin.kapt.get().pluginId)
+    //id(libs.plugins.dagger.hilt.get().pluginId)
+    // Apply the org.jetbrains.kotlin.jvm Plugin to add support for Kotlin.
+    // Apply the application plugin to add support for building a CLI application in Java.
+    //id("com.google.devtools.ksp") version "2.0.0-Beta4-1.0.17"
+    //id(libs.plugins.ksp.get().pluginId)
+    alias(libs.plugins.ksp)
 }
 
 // When app incompatible with previous version change this value
@@ -57,24 +62,11 @@ android {
 
     flavorDimensions.add("environment")
     productFlavors {
-        val currentVersion = globalVersion * 100000 + majorVersion * 10000 + minorVersion * 1000 + fixVersion * 100
         create("develop") {
             manifestPlaceholders += mapOf()
             dimension = "environment"
             manifestPlaceholders["enableCrashReporting"] = false
             applicationIdSuffix = ".develop"
-        }
-        create("qa") {
-            manifestPlaceholders += mapOf()
-            dimension = "environment"
-            manifestPlaceholders["enableCrashReporting"] = true
-            applicationIdSuffix = ".develop"
-        }
-        create("stage") {
-            manifestPlaceholders += mapOf()
-            dimension = "environment"
-            manifestPlaceholders["enableCrashReporting"] = true
-            applicationIdSuffix = ".stage"
         }
         create("production") {
             manifestPlaceholders += mapOf()
@@ -112,9 +104,16 @@ dependencies {
     implementation(libs.bundles.compose.ui)
     implementation(libs.bundles.compose.accompanist.core)
     // DI
-    implementation(libs.bundles.dagger.all)
-    kapt(libs.bundles.dagger.kapt)
-    kapt(libs.hilt.compiler)
+    implementation(libs.koin.core)
+    implementation(libs.koin.android)
+    implementation(libs.koin.navigation)
+    implementation(libs.koin.annotation)
+    ksp(libs.koin.ksp)
+}
+
+ksp {
+    arg("KOIN_CONFIG_CHECK","true")
+    arg("KOIN_DEFAULT_MODULE","false")
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class).all {

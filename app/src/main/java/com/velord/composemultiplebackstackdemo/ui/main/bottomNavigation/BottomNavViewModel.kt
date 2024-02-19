@@ -1,18 +1,19 @@
 package com.velord.composemultiplebackstackdemo.ui.main.bottomNavigation
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavDestination
 import com.velord.composemultiplebackstackdemo.ui.navigation.BottomNavigationItem
 import com.velord.multiplebackstackapplier.utils.isCurrentStartDestination
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
+import org.koin.android.annotation.KoinViewModel
 
-@HiltViewModel
-class BottomNavViewModel @Inject constructor(
+@KoinViewModel
+class BottomNavViewModel (
+    private val handle: SavedStateHandle,
     private val bottomNavEventService: BottomNavEventService
 ): ViewModel() {
 

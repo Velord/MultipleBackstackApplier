@@ -8,9 +8,7 @@ import androidx.core.view.WindowCompat
 import androidx.navigation.fragment.NavHostFragment
 import com.velord.composemultiplebackstackdemo.R
 import com.velord.composemultiplebackstackdemo.databinding.ActivityMainBinding
-import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     companion object {

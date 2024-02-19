@@ -5,21 +5,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import com.velord.composemultiplebackstackdemo.R
 import com.velord.composemultiplebackstackdemo.ui.compose.screen.AddNewScreen
 import com.velord.composemultiplebackstackdemo.ui.compose.theme.setContentWithTheme
 import com.velord.composemultiplebackstackdemo.ui.main.bottomNavigation.BottomNavViewModel
 import com.velord.composemultiplebackstackdemo.ui.main.bottomNavigation.addTestCallback
-import dagger.hilt.android.AndroidEntryPoint
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 private const val TAG = "left"
 
-@AndroidEntryPoint
 class LeftGraphFragment : Fragment() {
 
-    private val viewModel by viewModels<BottomNavViewModel>()
+    private val viewModel by viewModel<BottomNavViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
